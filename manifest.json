@@ -1,0 +1,21 @@
+{
+  "name": "Aman Digital Calendar",
+  "short_name": "Aman Cal",
+  "description": "Premium 3D 2026 Calendar",
+  "start_url": "A.html",
+  "display": "standalone",
+  "background_color": "#e0e5ec",
+  "theme_color": "#3182ce",
+  "icons": [
+    {
+      "src": "aman.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "aman.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aman Digital | 3D Pro</title>
+    <link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap');
+
+        :root {
+            --bg: #e0e5ec;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --accent-blue: #3182ce;
+            --accent-red: #e53e3e;
+            --text-dark: #4a5568;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .calculator-frame {
+            background: var(--bg);
+            width: 100%;
+            max-width: 360px;
+            /* Lambai badhane ke liye padding badhayi hai */
+            padding: 40px 20px; 
+            border-radius: 50px;
+            box-shadow: 18px 18px 35px var(--shadow-dark), 
+                        -18px -18px 35px var(--shadow-light);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 30px; /* Thoda gap badhaya */
+            letter-spacing: 1.5px;
+        }
+        .brand span:first-child { color: var(--text-dark); opacity: 0.8; }
+        .brand span:last-child { color: var(--accent-blue); }
+
+        .display-box {
+            background: var(--bg);
+            height: 75px; /* Display box thoda lamba kiya */
+            border-radius: 22px;
+            margin-bottom: 35px; /* Grid se doori badhayi */
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: inset 7px 7px 12px var(--shadow-dark), 
+                        inset -7px -7px 12px var(--shadow-light);
+        }
+
+        .display-box h2 { font-size: 1.3rem; color: var(--text-dark); letter-spacing: 2px; }
+        .nav-btn { font-size: 1.6rem; color: var(--accent-blue); padding: 10px; cursor: pointer; font-weight: 800; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px 10px; /* Vertical gap (12px) badhaya lambai ke liye */
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            padding-bottom: 15px; /* Weekdays aur dates ke beech gap */
+        }
+
+        .day-btn {
+            aspect-ratio: 1;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+            transition: 0.1s;
+        }
+
+        .day-btn:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                        inset -4px -4px 8px var(--shadow-light);
+            transform: scale(0.95);
+        }
+
+        .holiday { color: var(--accent-red); }
+
+        .active-today {
+            grid-column: span 2;
+            aspect-ratio: unset;
+            height: 100%;
+            border-radius: 18px;
+            background: var(--accent-blue);
+            color: #fff !important;
+            font-size: 0.8rem;
+            box-shadow: 5px 5px 12px rgba(49, 130, 206, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.65rem;
+            color: var(--shadow-dark);
+            margin-top: 40px; /* Footer ko aur niche dhakela */
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-frame">
+        <div class="brand">
+            <span>AMAN</span> <span>CALENDAR</span>
+        </div>
+
+        <div class="display-box">
+            <div class="nav-btn" onclick="move(-1)">‹</div>
+            <h2 id="mLabel">MARCH</h2>
+            <div class="nav-btn" onclick="move(1)">›</div>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+        <div class="footer">Premium 3D Interface ● Aman Digital</div>
+    </div>
+
+    <script>
+        let m = 2; const yr = 2026;
+        const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+        const holidays = { 2: [4, 20, 31], 10: [15] };
+
+        function render() {
+            const grid = document.getElementById('grid');
+            document.getElementById('mLabel').innerText = months[m];
+            grid.innerHTML = "";
+
+            ["S","M","T","W","T","F","S"].forEach(d => {
+                grid.innerHTML += `<div class="weekday">${d}</div>`;
+            });
+
+            const first = new Date(yr, m, 1).getDay();
+            const last = new Date(yr, m + 1, 0).getDate();
+            const currentH = holidays[m] || [];
+
+            for (let i = 0; i < first; i++) grid.innerHTML += `<div></div>`;
+
+            for (let d = 1; d <= last; d++) {
+                const isToday = (m === 2 && d === 25);
+                const isSun = new Date(yr, m, d).getDay() === 0;
+                const isH = currentH.includes(d);
+                
+                if (isToday) {
+                    grid.innerHTML += `<div class="day-btn active-today">25 MAR</div>`;
+                } else {
+                    let hClass = (isSun || isH) ? 'holiday' : '';
+                    grid.innerHTML += `<div class="day-btn ${hClass}">${d}</div>`;
+                }
+            }
+        }
+
+        function move(n) { m += n; if (m < 0) m = 11; if (m > 11) m = 0; render(); }
+        render();
+    </script>
+</body>
+</html>
