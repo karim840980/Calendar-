@@ -1,0 +1,15 @@
+{
+  "name": "Aman Premium Calculator",
+  "short_name": "Aman Calc",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#161b22",
+  "theme_color": "#58a6ff",
+  "icons": [
+    {
+      "src": "aman.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
